@@ -1,0 +1,162 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Admin Header -->
+<section class="py-8 px-6 border-b border-bryt-charcoal bg-bryt-charcoal/30">
+    <div class="max-w-6xl mx-auto">
+        <div class="flex items-center justify-between">
+            <div>
+                <a href="/admin" class="text-xs text-bryt-gray hover:text-bryt-silver transition-colors">&larr; Back to Dashboard</a>
+                <p class="font-serif text-2xl text-bryt-white mt-2">Inbox</p>
+            </div>
+            <div class="flex gap-4 items-center">
+                <a href="/admin/appointments" class="px-4 py-2 text-xs tracking-wider uppercase text-bryt-silver hover:text-bryt-white transition-colors">
+                    Appointments
+                </a>
+                <a href="/admin/clients" class="px-4 py-2 text-xs tracking-wider uppercase text-bryt-silver hover:text-bryt-white transition-colors">
+                    Clients
+                </a>
+                <a href="/admin/services" class="px-4 py-2 text-xs tracking-wider uppercase text-bryt-silver hover:text-bryt-white transition-colors">
+                    Services
+                </a>
+                <a href="/admin/messages" class="px-4 py-2 text-xs tracking-wider uppercase text-bryt-white border-b border-bryt-white">
+                    Inbox
+                </a>
+                <span class="w-px h-6 bg-bryt-charcoal"></span>
+                <a href="/admin/logout" class="px-4 py-2 text-xs tracking-wider uppercase text-bryt-gray hover:text-red-400 transition-colors">
+                    Logout
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Contact Messages -->
+<section class="py-10 px-6 border-b border-bryt-charcoal">
+    <div class="max-w-6xl mx-auto">
+        <div class="flex items-center justify-between mb-6">
+            <h2 class="text-xs tracking-[0.3em] uppercase text-bryt-gray">
+                Contact Messages
+                {% if contact_unread > 0 %}
+                <span class="ml-2 px-2 py-0.5 bg-bryt-pink text-bryt-black text-[10px] rounded-full">{{ contact_unread }}</span>
+                {% endif %}
+            </h2>
+            <span class="text-xs text-bryt-gray">{{ contact_messages|length }} total</span>
+        </div>
+
+        {% if contact_messages %}
+        <div id="contactList" class="space-y-3">
+            {% for msg in contact_messages %}
+            <div id="contact-{{ msg.id }}" class="p-5 border {{ 'border-bryt-pink/30 bg-bryt-pink/5' if not msg.is_read else 'border-bryt-charcoal bg-bryt-charcoal/10' }} transition-colors">
+                <div class="flex items-start justify-between gap-4">
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-3 mb-1">
+                            <p class="text-bryt-white font-medium">{{ msg.name }}</p>
+                            {% if not msg.is_read %}
+                            <span class="px-2 py-0.5 text-[10px] tracking-wider uppercase bg-bryt-pink/20 text-bryt-pink border border-bryt-pink/30 rounded">New</span>
+                            {% endif %}
+                        </div>
+                        <p class="text-sm text-bryt-silver mb-1">{{ msg.email }}</p>
+                        <p class="text-sm text-bryt-silver mt-2 line-clamp-2">{{ msg.message }}</p>
+                    </div>
+                    <div class="flex flex-col items-end gap-3 flex-shrink-0">
+                        <p class="text-xs text-bryt-gray">{{ msg.created_at.strftime('%b %d, %Y') if msg.created_at else '' }}</p>
+                        {% if not msg.is_read %}
+                        <button
+                            hx-post="/admin/messages/{{ msg.id }}/read"
+                            hx-target="#contact-{{ msg.id }}"
+                            hx-swap="outerHTML"
+                            class="text-xs text-bryt-gray hover:text-bryt-silver border border-bryt-charcoal px-3 py-1 transition-colors">
+                            Mark read
+                        </button>
+                        {% else %}
+                        <span class="text-xs text-bryt-gray">Read</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="mt-3 pt-3 border-t border-bryt-charcoal/50">
+                    <p class="text-sm text-bryt-pearl whitespace-pre-wrap">{{ msg.message }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="border border-bryt-charcoal">
+            <div class="p-10 text-center">
+                <svg class="w-12 h-12 mx-auto mb-4 text-bryt-gray" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                </svg>
+                <p class="text-bryt-silver text-sm">No contact messages yet</p>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Curation Requests -->
+<section class="py-10 px-6 pb-16">
+    <div class="max-w-6xl mx-auto">
+        <div class="flex items-center justify-between mb-6">
+            <h2 class="text-xs tracking-[0.3em] uppercase text-bryt-gray">
+                Curation Requests
+                {% if curation_unread > 0 %}
+                <span class="ml-2 px-2 py-0.5 bg-bryt-pink text-bryt-black text-[10px] rounded-full">{{ curation_unread }}</span>
+                {% endif %}
+            </h2>
+            <span class="text-xs text-bryt-gray">{{ curations|length }} total</span>
+        </div>
+
+        {% if curations %}
+        <div id="curationList" class="space-y-3">
+            {% for req in curations %}
+            <div id="curation-{{ req.id }}" class="p-5 border {{ 'border-bryt-pink/30 bg-bryt-pink/5' if not req.is_read else 'border-bryt-charcoal bg-bryt-charcoal/10' }} transition-colors">
+                <div class="flex items-start justify-between gap-4">
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-3 mb-1">
+                            <p class="text-bryt-white font-medium">{{ req.name }}</p>
+                            {% if not req.is_read %}
+                            <span class="px-2 py-0.5 text-[10px] tracking-wider uppercase bg-bryt-pink/20 text-bryt-pink border border-bryt-pink/30 rounded">New</span>
+                            {% endif %}
+                        </div>
+                        <p class="text-sm text-bryt-silver mb-2">{{ req.email }}{% if req.socials %} &middot; {{ req.socials }}{% endif %}</p>
+                        <div class="flex gap-4 text-xs">
+                            <span class="text-bryt-gray">Area: <span class="text-bryt-pearl capitalize">{{ req.area }}</span></span>
+                            <span class="text-bryt-gray">Metal: <span class="text-bryt-pearl capitalize">{{ req.metal }}</span></span>
+                        </div>
+                    </div>
+                    <div class="flex flex-col items-end gap-3 flex-shrink-0">
+                        <p class="text-xs text-bryt-gray">{{ req.created_at.strftime('%b %d, %Y') if req.created_at else '' }}</p>
+                        {% if not req.is_read %}
+                        <button
+                            hx-post="/admin/curations/{{ req.id }}/read"
+                            hx-target="#curation-{{ req.id }}"
+                            hx-swap="outerHTML"
+                            class="text-xs text-bryt-gray hover:text-bryt-silver border border-bryt-charcoal px-3 py-1 transition-colors">
+                            Mark read
+                        </button>
+                        {% else %}
+                        <span class="text-xs text-bryt-gray">Read</span>
+                        {% endif %}
+                    </div>
+                </div>
+                {% if req.notes %}
+                <div class="mt-3 pt-3 border-t border-bryt-charcoal/50">
+                    <p class="text-sm text-bryt-pearl whitespace-pre-wrap">{{ req.notes }}</p>
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="border border-bryt-charcoal">
+            <div class="p-10 text-center">
+                <svg class="w-12 h-12 mx-auto mb-4 text-bryt-gray" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
+                </svg>
+                <p class="text-bryt-silver text-sm">No curation requests yet</p>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

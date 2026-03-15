@@ -1,0 +1,215 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="py-16 px-6 border-b border-bryt-charcoal">
+    <div class="max-w-4xl mx-auto text-center">
+        <h1 class="text-xs tracking-[0.4em] uppercase text-bryt-gray mb-3">Styling Service</h1>
+        <p class="font-serif text-5xl text-bryt-white mb-6">Curations</p>
+        <p class="text-bryt-silver max-w-xl mx-auto">
+            Let me help style your piercings. Share your vibe, and I'll create a 
+            personalized jewelry curation just for you.
+        </p>
+    </div>
+</section>
+
+<!-- What is a Curation -->
+<section class="py-12 px-6 bg-bryt-charcoal/20 border-b border-bryt-charcoal">
+    <div class="max-w-4xl mx-auto">
+        <div class="grid md:grid-cols-2 gap-12 items-center">
+            <div>
+                <h2 class="font-serif text-2xl text-bryt-white mb-4">How It Works</h2>
+                <div class="space-y-4">
+                    <div class="flex gap-4">
+                        <span class="w-8 h-8 border border-bryt-pink rounded-full flex items-center justify-center text-bryt-pink text-sm flex-shrink-0">1</span>
+                        <p class="text-bryt-silver text-sm">Tell me what area you want styled and your jewelry preference</p>
+                    </div>
+                    <div class="flex gap-4">
+                        <span class="w-8 h-8 border border-bryt-pink rounded-full flex items-center justify-center text-bryt-pink text-sm flex-shrink-0">2</span>
+                        <p class="text-bryt-silver text-sm">Upload a photo of the area and share your style inspiration</p>
+                    </div>
+                    <div class="flex gap-4">
+                        <span class="w-8 h-8 border border-bryt-pink rounded-full flex items-center justify-center text-bryt-pink text-sm flex-shrink-0">3</span>
+                        <p class="text-bryt-silver text-sm">I'll review your aesthetic and create a custom curation for you</p>
+                    </div>
+                </div>
+            </div>
+            <div class="aspect-square overflow-hidden border border-bryt-charcoal shadow-[0_0_25px_rgba(232,180,184,0.2)]">
+                <img src="/static/images/bryt/bryt-glamour.jpeg" 
+                     alt="Bryt styling" 
+                     class="w-full h-full object-cover">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Curation Request Form -->
+<section class="py-20 px-6">
+    <div class="max-w-2xl mx-auto">
+        <div class="text-center mb-12">
+            <h2 class="font-serif text-3xl text-bryt-white mb-4">Request a Curation</h2>
+            <p class="text-bryt-silver text-sm">Fill out the form below and I'll get back to you with styling ideas.</p>
+        </div>
+        
+        <form id="curationForm" class="space-y-8" hx-post="/api/curations" hx-target="#curationResponse" hx-swap="innerHTML">
+            
+            <!-- Contact Info -->
+            <div class="space-y-6">
+                <h3 class="text-xs tracking-[0.3em] uppercase text-bryt-gray border-b border-bryt-charcoal pb-2">
+                    Your Information
+                </h3>
+                
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm text-bryt-silver mb-2" for="name">Name</label>
+                        <input type="text" id="name" name="name" required
+                               class="w-full px-4 py-3 bg-bryt-charcoal/50 border border-bryt-charcoal text-bryt-white placeholder-bryt-gray focus:border-bryt-pink focus:outline-none transition-colors"
+                               placeholder="Your name">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-bryt-silver mb-2" for="email">Email</label>
+                        <input type="email" id="email" name="email" required
+                               class="w-full px-4 py-3 bg-bryt-charcoal/50 border border-bryt-charcoal text-bryt-white placeholder-bryt-gray focus:border-bryt-pink focus:outline-none transition-colors"
+                               placeholder="your@email.com">
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block text-sm text-bryt-silver mb-2" for="socials">Social Media (optional)</label>
+                    <input type="text" id="socials" name="socials"
+                           class="w-full px-4 py-3 bg-bryt-charcoal/50 border border-bryt-charcoal text-bryt-white placeholder-bryt-gray focus:border-bryt-pink focus:outline-none transition-colors"
+                           placeholder="Instagram handle or link to your profile">
+                    <p class="text-xs text-bryt-gray mt-1">Helps me get a sense of your aesthetic</p>
+                </div>
+            </div>
+            
+            <!-- Piercing Area -->
+            <div class="space-y-6">
+                <h3 class="text-xs tracking-[0.3em] uppercase text-bryt-gray border-b border-bryt-charcoal pb-2">
+                    What Would You Like Styled?
+                </h3>
+                
+                <div>
+                    <label class="block text-sm text-bryt-silver mb-3">Piercing Area</label>
+                    <div class="grid grid-cols-3 gap-3">
+                        <label class="cursor-pointer">
+                            <input type="radio" name="area" value="ear" class="peer hidden" required>
+                            <div class="p-4 border border-bryt-charcoal text-center peer-checked:border-bryt-pink peer-checked:bg-bryt-pink/10 hover:border-bryt-gray transition-colors">
+                                <span class="text-sm text-bryt-silver peer-checked:text-bryt-pink">Ear</span>
+                            </div>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="area" value="face" class="peer hidden">
+                            <div class="p-4 border border-bryt-charcoal text-center peer-checked:border-bryt-pink peer-checked:bg-bryt-pink/10 hover:border-bryt-gray transition-colors">
+                                <span class="text-sm text-bryt-silver peer-checked:text-bryt-pink">Face</span>
+                            </div>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="area" value="full-body" class="peer hidden">
+                            <div class="p-4 border border-bryt-charcoal text-center peer-checked:border-bryt-pink peer-checked:bg-bryt-pink/10 hover:border-bryt-gray transition-colors">
+                                <span class="text-sm text-bryt-silver peer-checked:text-bryt-pink">Full Body</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- Photo of Area -->
+                <div class="p-4 border border-bryt-charcoal bg-bryt-charcoal/20">
+                    <p class="text-sm text-bryt-silver">
+                        <span class="text-bryt-pink font-medium">Photos:</span>
+                        After submitting, send a clear photo of the area you want styled plus any inspiration images via
+                        <a href="https://instagram.com" target="_blank" class="text-bryt-pink hover:text-bryt-blush underline">Instagram DM</a>
+                        or email. Include your name so Bryt can match it to your request.
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Jewelry Preference -->
+            <div class="space-y-6">
+                <h3 class="text-xs tracking-[0.3em] uppercase text-bryt-gray border-b border-bryt-charcoal pb-2">
+                    Jewelry Preference
+                </h3>
+                
+                <div>
+                    <label class="block text-sm text-bryt-silver mb-3">What's your metal preference?</label>
+                    <div class="grid grid-cols-3 gap-3">
+                        <label class="cursor-pointer">
+                            <input type="radio" name="metal" value="gold" class="peer hidden" required>
+                            <div class="p-4 border border-bryt-charcoal text-center peer-checked:border-bryt-pink peer-checked:bg-bryt-pink/10 hover:border-bryt-gray transition-colors">
+                                <div class="w-6 h-6 mx-auto mb-2 rounded-full" style="background: linear-gradient(135deg, #FFD700 0%, #B8860B 30%, #FFD700 50%, #DAA520 70%, #B8860B 100%); box-shadow: inset 0 -2px 4px rgba(0,0,0,0.2), inset 0 2px 4px rgba(255,255,255,0.3);"></div>
+                                <span class="text-sm text-bryt-silver peer-checked:text-bryt-pink">Gold</span>
+                            </div>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="metal" value="silver" class="peer hidden">
+                            <div class="p-4 border border-bryt-charcoal text-center peer-checked:border-bryt-pink peer-checked:bg-bryt-pink/10 hover:border-bryt-gray transition-colors">
+                                <div class="w-6 h-6 mx-auto mb-2 rounded-full" style="background: linear-gradient(135deg, #E8E8E8 0%, #A8A8A8 30%, #E8E8E8 50%, #C0C0C0 70%, #A8A8A8 100%); box-shadow: inset 0 -2px 4px rgba(0,0,0,0.15), inset 0 2px 4px rgba(255,255,255,0.5);"></div>
+                                <span class="text-sm text-bryt-silver peer-checked:text-bryt-pink">Silver</span>
+                            </div>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="metal" value="mixed" class="peer hidden">
+                            <div class="p-4 border border-bryt-charcoal text-center peer-checked:border-bryt-pink peer-checked:bg-bryt-pink/10 hover:border-bryt-gray transition-colors">
+                                <div class="w-6 h-6 mx-auto mb-2 rounded-full" style="background: linear-gradient(135deg, #FFD700 0%, #B8860B 25%, #C0C0C0 50%, #E8E8E8 75%, #A8A8A8 100%); box-shadow: inset 0 -2px 4px rgba(0,0,0,0.2), inset 0 2px 4px rgba(255,255,255,0.3);"></div>
+                                <span class="text-sm text-bryt-silver peer-checked:text-bryt-pink">Mixed</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Style Inspiration -->
+            <div class="space-y-6">
+                <h3 class="text-xs tracking-[0.3em] uppercase text-bryt-gray border-b border-bryt-charcoal pb-2">
+                    Style Inspiration
+                </h3>
+
+                <div>
+                    <label class="block text-sm text-bryt-silver mb-2" for="notes">Additional Notes (optional)</label>
+                    <textarea id="notes" name="notes" rows="4"
+                              class="w-full px-4 py-3 bg-bryt-charcoal/50 border border-bryt-charcoal text-bryt-white placeholder-bryt-gray focus:border-bryt-pink focus:outline-none transition-colors resize-none"
+                              placeholder="Tell me more about the look you're going for, any specific pieces you love, or anything else I should know..."></textarea>
+                </div>
+            </div>
+            
+            <!-- Payment & Submit -->
+            <div class="space-y-6 pt-4">
+                <div class="p-6 border border-bryt-pink/30 bg-bryt-pink/5">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-bryt-silver">Custom Curation Fee</span>
+                        <span class="font-serif text-2xl text-bryt-pink">$20</span>
+                    </div>
+                    <p class="text-xs text-bryt-gray">
+                        Includes personalized jewelry recommendations tailored to your style and anatomy.
+                    </p>
+                </div>
+                
+                <button type="submit"
+                        class="w-full px-8 py-4 bg-bryt-pink text-bryt-black text-sm tracking-widest uppercase hover:bg-bryt-blush transition-colors">
+                    Submit Curation Request
+                </button>
+                <p class="text-xs text-bryt-gray text-center mt-4">
+                    Please be patient — I personally review and complete each curation request upon submission.
+                </p>
+            </div>
+
+            <!-- Response area for HTMX -->
+            <div id="curationResponse"></div>
+        </form>
+    </div>
+</section>
+
+<!-- Amazon Link -->
+<section class="py-16 px-6 bg-bryt-charcoal/30 border-t border-bryt-charcoal">
+    <div class="max-w-2xl mx-auto text-center">
+        <h3 class="font-serif text-2xl text-bryt-white mb-4">Shop Jewelry</h3>
+        <p class="text-bryt-silver text-sm mb-6">
+            Browse my curated collection on Amazon for quality pieces at great prices.
+        </p>
+        <a href="#" target="_blank" 
+           class="inline-block px-8 py-3 bg-bryt-pink text-bryt-black text-sm tracking-widest uppercase hover:bg-bryt-blush transition-colors">
+            Visit Amazon Store
+        </a>
+    </div>
+</section>
+{% endblock %}

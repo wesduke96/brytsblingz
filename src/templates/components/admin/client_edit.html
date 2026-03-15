@@ -1,0 +1,45 @@
+{# Inline edit form for a client — loaded into #client-{id}-edit via HTMX #}
+<form
+    hx-post="/admin/clients/{{ client.id }}/edit"
+    hx-target="#client-{{ client.id }}"
+    hx-swap="outerHTML"
+    class="p-5 border-t border-bryt-charcoal bg-bryt-charcoal/30 space-y-4">
+
+    <div class="grid md:grid-cols-2 gap-4">
+        <div>
+            <label class="block text-xs text-bryt-gray mb-1">Name</label>
+            <input type="text" name="name" value="{{ client.name }}" required
+                   class="w-full px-3 py-2 bg-bryt-charcoal/50 border border-bryt-charcoal text-bryt-white text-sm focus:border-bryt-silver focus:outline-none transition-colors">
+        </div>
+        <div>
+            <label class="block text-xs text-bryt-gray mb-1">Phone</label>
+            <input type="tel" name="phone" value="{{ client.phone or '' }}"
+                   class="w-full px-3 py-2 bg-bryt-charcoal/50 border border-bryt-charcoal text-bryt-white text-sm focus:border-bryt-silver focus:outline-none transition-colors">
+        </div>
+        <div class="md:col-span-2">
+            <label class="block text-xs text-bryt-gray mb-1">Email</label>
+            <input type="email" name="email" value="{{ client.email }}" required
+                   class="w-full px-3 py-2 bg-bryt-charcoal/50 border border-bryt-charcoal text-bryt-white text-sm focus:border-bryt-silver focus:outline-none transition-colors">
+        </div>
+        <div class="md:col-span-2">
+            <label class="block text-xs text-bryt-gray mb-1">Notes</label>
+            <textarea name="notes" rows="2"
+                      class="w-full px-3 py-2 bg-bryt-charcoal/50 border border-bryt-charcoal text-bryt-white text-sm focus:border-bryt-silver focus:outline-none transition-colors resize-none"
+                      placeholder="Internal notes...">{{ client.notes or '' }}</textarea>
+        </div>
+    </div>
+
+    <div class="flex gap-3">
+        <button type="submit"
+                class="px-5 py-2 bg-bryt-pink text-bryt-black text-xs tracking-wider uppercase hover:bg-bryt-blush transition-colors">
+            Save
+        </button>
+        <button type="button"
+                hx-get="/admin/clients/{{ client.id }}/cancel-edit"
+                hx-target="#client-{{ client.id }}-edit"
+                hx-swap="innerHTML"
+                class="px-5 py-2 border border-bryt-charcoal text-bryt-gray text-xs tracking-wider uppercase hover:text-bryt-silver transition-colors">
+            Cancel
+        </button>
+    </div>
+</form>

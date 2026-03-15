@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts - Elegant script + clean sans-serif -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Pinyon+Script&family=Questrial&display=swap" rel="stylesheet">
+    
+    <!-- HTMX for interactivity -->
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    
+    <!-- Custom Tailwind Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'bryt': {
+                            'black': '#0a0a0a',
+                            'charcoal': '#1a1a1a',
+                            'gray': '#404040',
+                            'silver': '#a0a0a0',
+                            'pearl': '#e8e8e8',
+                            'white': '#fafafa',
+                            // Pink accents (soft feminine)
+                            'pink': '#e8b4b8',
+                            'pink-light': '#f5d5d8',
+                            'pink-dark': '#c9787c',
+                            'blush': '#f0c4c8',
+                            // Red accents (gothic/edgy)
+                            'red': '#8b0000',
+                            'crimson': '#a02040',
+                            'rose': '#c44569',
+                        }
+                    },
+                    fontFamily: {
+                        'script': ['"Pinyon Script"', 'cursive'],
+                        'serif': ['"Cormorant Garamond"', 'serif'],
+                        'sans': ['Questrial', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1a1a1a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #404040;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #606060;
+        }
+        
+        /* Smooth transitions */
+        * {
+            transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+        }
+        
+        /* Elegant underline animation */
+        .nav-link {
+            position: relative;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 1px;
+            bottom: -2px;
+            left: 50%;
+            background-color: #f4c4d4;
+            transition: all 0.3s ease;
+        }
+        .nav-link:hover::after {
+            width: 100%;
+            left: 0;
+        }
+        .nav-link:hover {
+            color: #f4c4d4;
+        }
+        
+        /* Pink accent button */
+        .btn-pink {
+            background-color: #f4c4d4;
+            color: #0a0a0a;
+        }
+        .btn-pink:hover {
+            background-color: #f8d7e0;
+        }
+        
+        /* ═══════════════════════════════════════════════════════════════
+           ANIMATIONS
+           ═══════════════════════════════════════════════════════════════ */
+        
+        /* Fade in up animation */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Fade in animation */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        /* Subtle float animation for images */
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+        
+        /* Gentle pulse glow */
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 20px rgba(232, 180, 184, 0.1); }
+            50% { box-shadow: 0 0 40px rgba(232, 180, 184, 0.25); }
+        }
+        
+        /* Marquee scroll for photo strip */
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        
+        /* Scale in animation */
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        /* Shimmer effect */
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        
+        /* Animation classes */
+        .animate-fade-in-up {
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+        
+        .animate-fade-in {
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+        
+        .animate-scale-in {
+            animation: scaleIn 0.6s ease-out forwards;
+        }
+        
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .animate-pulse-glow {
+            animation: pulseGlow 4s ease-in-out infinite;
+        }
+        
+        .animate-marquee {
+            animation: marquee 30s linear infinite;
+        }
+        
+        .animate-marquee:hover {
+            animation-play-state: paused;
+        }
+        
+        /* Scroll-triggered animation (hidden by default) */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        
+        .reveal.revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* Staggered delays */
+        .delay-100 { animation-delay: 0.1s; transition-delay: 0.1s; }
+        .delay-200 { animation-delay: 0.2s; transition-delay: 0.2s; }
+        .delay-300 { animation-delay: 0.3s; transition-delay: 0.3s; }
+        .delay-400 { animation-delay: 0.4s; transition-delay: 0.4s; }
+        .delay-500 { animation-delay: 0.5s; transition-delay: 0.5s; }
+        .delay-600 { animation-delay: 0.6s; transition-delay: 0.6s; }
+        
+        /* Enhanced image hover effects */
+        .img-hover-zoom {
+            overflow: hidden;
+        }
+        .img-hover-zoom img {
+            transition: transform 0.7s ease, filter 0.7s ease;
+        }
+        .img-hover-zoom:hover img {
+            transform: scale(1.08);
+            filter: brightness(1.1);
+        }
+        
+        .img-hover-glow:hover {
+            box-shadow: 0 0 50px rgba(232, 180, 184, 0.3);
+        }
+        
+        /* Ken Burns effect for hero images */
+        @keyframes kenBurns {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.1); }
+        }
+        
+        .ken-burns {
+            animation: kenBurns 20s ease-out forwards;
+        }
+    </style>
+    
+    {% block head %}{% endblock %}
+</head>
+<body class="bg-bryt-black text-bryt-pearl min-h-screen font-sans antialiased">
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-bryt-black/95 backdrop-blur-sm border-b border-bryt-charcoal">
+        <div class="max-w-6xl mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <!-- Logo -->
+                <a href="/" class="group">
+                    <span class="font-script text-4xl text-bryt-white tracking-wide group-hover:text-bryt-pink transition-colors">
+                        Bryt's Blingz
+                    </span>
+                    <span class="block mt-1 text-[10px] tracking-[0.3em] uppercase text-bryt-silver font-sans group-hover:text-bryt-pink/70 transition-colors">
+                        Piercing Stylist
+                    </span>
+                </a>
+                
+                <!-- Desktop Navigation -->
+                <div class="hidden md:flex items-center space-x-10">
+                    <a href="/services" class="nav-link text-sm tracking-widest uppercase text-bryt-silver hover:text-bryt-white">
+                        Services
+                    </a>
+                    <a href="/booking" class="nav-link text-sm tracking-widest uppercase text-bryt-silver hover:text-bryt-white">
+                        Book Now
+                    </a>
+                    <a href="/shop" class="nav-link text-sm tracking-widest uppercase text-bryt-silver hover:text-bryt-white">
+                        Curations
+                    </a>
+                    <a href="/aftercare" class="nav-link text-sm tracking-widest uppercase text-bryt-silver hover:text-bryt-white">
+                        Aftercare
+                    </a>
+                    <a href="/contact" class="nav-link text-sm tracking-widest uppercase text-bryt-silver hover:text-bryt-white">
+                        Contact
+                    </a>
+                </div>
+                
+                <!-- Mobile Menu Button -->
+                <button class="md:hidden text-bryt-silver hover:text-bryt-white" onclick="toggleMobileMenu()">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div id="mobileMenu" class="hidden md:hidden bg-bryt-charcoal border-t border-bryt-gray">
+            <div class="px-6 py-4 space-y-4">
+                <a href="/services" class="block text-sm tracking-widest uppercase text-bryt-silver hover:text-bryt-white">Services</a>
+                <a href="/booking" class="block text-sm tracking-widest uppercase text-bryt-silver hover:text-bryt-white">Book Now</a>
+                <a href="/shop" class="block text-sm tracking-widest uppercase text-bryt-silver hover:text-bryt-white">Curations</a>
+                <a href="/aftercare" class="block text-sm tracking-widest uppercase text-bryt-silver hover:text-bryt-white">Aftercare</a>
+                <a href="/contact" class="block text-sm tracking-widest uppercase text-bryt-silver hover:text-bryt-white">Contact</a>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Main Content -->
+    <main class="pt-24">
+        {% block content %}{% endblock %}
+    </main>
+    
+    <!-- Footer -->
+    <footer class="mt-20 border-t border-bryt-charcoal bg-bryt-black">
+        <div class="max-w-6xl mx-auto px-6 py-12">
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Brand -->
+                <div>
+                    <span class="font-script text-3xl text-bryt-white">Bryt's Blingz</span>
+                    <p class="mt-3 text-sm text-bryt-silver leading-relaxed">
+                        Professional piercing services with a gentle touch. 
+                        Creating beautiful curations, one piercing at a time.
+                    </p>
+                </div>
+                
+                <!-- Quick Links -->
+                <div>
+                    <h4 class="text-xs tracking-widest uppercase text-bryt-gray mb-4">Quick Links</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="/services" class="text-bryt-silver hover:text-bryt-pink transition-colors">Services</a></li>
+                        <li><a href="/booking" class="text-bryt-silver hover:text-bryt-pink transition-colors">Book Appointment</a></li>
+                        <li><a href="/shop" class="text-bryt-silver hover:text-bryt-pink transition-colors">Curations</a></li>
+                        <li><a href="/aftercare" class="text-bryt-silver hover:text-bryt-pink transition-colors">Aftercare</a></li>
+                        <li><a href="/contact" class="text-bryt-silver hover:text-bryt-pink transition-colors">Contact</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Connect -->
+                <div>
+                    <h4 class="text-xs tracking-widest uppercase text-bryt-gray mb-4">Connect</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li>
+                            <a href="https://www.instagram.com/brytblingz/" target="_blank" class="text-bryt-silver hover:text-bryt-pink transition-colors flex items-center gap-2">
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                                @brytblingz
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="text-bryt-silver hover:text-bryt-pink transition-colors flex items-center gap-2">
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                                Twitter/X
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" target="_blank" class="text-bryt-silver hover:text-bryt-pink transition-colors flex items-center gap-2">
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M15.397 3.054a4.966 4.966 0 013.098 1.587A4.966 4.966 0 0118.397 8H21l-2.5 3.5L21 15h-2.603a4.966 4.966 0 01-.098 3.359 4.966 4.966 0 01-3.098 1.587l-.197.054H6.004l-.197-.054a4.966 4.966 0 01-3.098-1.587A4.966 4.966 0 012.603 15H0l2.5-3.5L0 8h2.603a4.966 4.966 0 01.098-3.359A4.966 4.966 0 015.8 3.054L5.997 3h9.4l.197.054z"/></svg>
+                                Amazon Store
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="mt-12 pt-8 border-t border-bryt-charcoal text-center">
+                <p class="text-xs text-bryt-gray tracking-wider">
+                    &copy; 2026 Bryt's Blingz. All rights reserved.
+                </p>
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            menu.classList.toggle('hidden');
+        }
+        
+        // Scroll-triggered reveal animations
+        document.addEventListener('DOMContentLoaded', function() {
+            const revealElements = document.querySelectorAll('.reveal');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('revealed');
+                        // Optional: unobserve after revealing
+                        // observer.unobserve(entry.target);
+                    }
+                });
+            }, {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            });
+            
+            revealElements.forEach(el => observer.observe(el));
+        });
+    </script>
+    
+    {% block scripts %}{% endblock %}
+</body>
+</html>
+

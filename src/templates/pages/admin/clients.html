@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Admin Header -->
+<section class="py-8 px-6 border-b border-bryt-charcoal bg-bryt-charcoal/30">
+    <div class="max-w-6xl mx-auto">
+        <div class="flex items-center justify-between">
+            <div>
+                <a href="/admin" class="text-xs text-bryt-gray hover:text-bryt-silver transition-colors">&larr; Back to Dashboard</a>
+                <p class="font-serif text-2xl text-bryt-white mt-2">Clients</p>
+            </div>
+            <div class="flex gap-4 items-center">
+                <a href="/admin/appointments" class="px-4 py-2 text-xs tracking-wider uppercase text-bryt-silver hover:text-bryt-white transition-colors">
+                    Appointments
+                </a>
+                <a href="/admin/clients" class="px-4 py-2 text-xs tracking-wider uppercase text-bryt-white border-b border-bryt-white">
+                    Clients
+                </a>
+                <a href="/admin/services" class="px-4 py-2 text-xs tracking-wider uppercase text-bryt-silver hover:text-bryt-white transition-colors">
+                    Services
+                </a>
+                <a href="/admin/messages" class="px-4 py-2 text-xs tracking-wider uppercase text-bryt-silver hover:text-bryt-white transition-colors">
+                    Inbox
+                </a>
+                <span class="w-px h-6 bg-bryt-charcoal"></span>
+                <a href="/admin/logout" class="px-4 py-2 text-xs tracking-wider uppercase text-bryt-gray hover:text-red-400 transition-colors">
+                    Logout
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Search & Add -->
+<section class="py-6 px-6 border-b border-bryt-charcoal">
+    <div class="max-w-6xl mx-auto">
+        <div class="flex flex-wrap gap-4 items-center justify-between">
+            <div class="flex-1 max-w-md">
+                <input type="search" name="q" value="{{ q or '' }}" placeholder="Search clients..."
+                       hx-get="/admin/clients"
+                       hx-trigger="input changed delay:300ms, search"
+                       hx-target="#clientsList"
+                       hx-swap="innerHTML"
+                       hx-push-url="true"
+                       class="w-full px-4 py-2 bg-bryt-charcoal/50 border border-bryt-charcoal text-bryt-white placeholder-bryt-gray focus:border-bryt-silver focus:outline-none transition-colors text-sm">
+            </div>
+            <button
+                hx-get="/admin/clients/new"
+                hx-target="#newClientZone"
+                hx-swap="innerHTML"
+                class="px-6 py-2 bg-bryt-pink text-bryt-black text-xs tracking-wider uppercase hover:bg-bryt-blush transition-colors">
+                + Add Client
+            </button>
+        </div>
+    </div>
+</section>
+
+<!-- New Client Zone -->
+<div class="px-6 max-w-6xl mx-auto">
+    <div id="newClientZone"></div>
+</div>
+
+<!-- Clients List -->
+<section class="py-8 px-6">
+    <div class="max-w-6xl mx-auto">
+        <div id="clientsList" class="grid gap-4">
+            {% if clients %}
+                {% for client in clients %}
+                    {% include "components/admin/client_row.html" %}
+                {% endfor %}
+
+                <div class="mt-2 text-center text-sm text-bryt-gray">
+                    Showing {{ clients|length }} client{% if clients|length != 1 %}s{% endif %}
+                </div>
+            {% else %}
+            <div class="border border-bryt-charcoal">
+                <div class="p-12 text-center">
+                    <svg class="w-16 h-16 mx-auto mb-4 text-bryt-gray" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                    <p class="text-bryt-white text-lg mb-2">No clients found</p>
+                    <p class="text-bryt-silver text-sm mb-6">{% if q %}No results for "{{ q }}". {% endif %}Your client list will grow as people book appointments.</p>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}

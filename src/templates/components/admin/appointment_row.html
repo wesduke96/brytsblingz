@@ -1,0 +1,99 @@
+<div id="apt-{{ apt.id }}" class="p-5 hover:bg-bryt-charcoal/20 transition-colors">
+    <div class="flex items-center justify-between">
+        <div class="flex items-center gap-4">
+            <div class="w-12 h-12 bg-bryt-pink/20 rounded-full flex items-center justify-center text-bryt-pink text-sm font-medium">
+                {{ apt.client.name[:2].upper() }}
+            </div>
+            <div>
+                <p class="text-bryt-white font-medium">{{ apt.client.name }}</p>
+                <p class="text-sm text-bryt-silver">{{ apt.service.name }} · ${{ apt.service.price|int }}{% if apt.quantity > 1 %} ×{{ apt.quantity }}{% endif %}</p>
+                <p class="text-xs text-bryt-gray mt-1">{{ apt.client.email }} · {{ apt.client.phone }}</p>
+            </div>
+        </div>
+
+        <div class="text-right">
+            <p class="text-bryt-white">{{ apt.appointment_date.strftime('%A, %b %d') }}</p>
+            <p class="text-sm text-bryt-silver">{{ apt.appointment_time.strftime('%I:%M %p') }}</p>
+        </div>
+
+        <!-- Status badge -->
+        <div class="w-28 text-center">
+            {% if apt.status == 'pending' %}
+            <span class="inline-block px-3 py-1 text-xs tracking-wider uppercase bg-yellow-900/30 text-yellow-500 border border-yellow-900/50 rounded">Pending</span>
+            {% elif apt.status == 'confirmed' %}
+            <span class="inline-block px-3 py-1 text-xs tracking-wider uppercase bg-green-900/30 text-green-500 border border-green-900/50 rounded">Confirmed</span>
+            {% elif apt.status == 'completed' %}
+            <span class="inline-block px-3 py-1 text-xs tracking-wider uppercase bg-bryt-charcoal text-bryt-silver border border-bryt-gray rounded">Completed</span>
+            {% elif apt.status == 'cancelled' %}
+            <span class="inline-block px-3 py-1 text-xs tracking-wider uppercase bg-red-900/30 text-red-500 border border-red-900/50 rounded">Cancelled</span>
+            {% endif %}
+        </div>
+
+        <!-- Action buttons -->
+        <div class="flex gap-2">
+            {% if apt.status == 'pending' %}
+            <!-- Confirm -->
+            <form hx-post="/admin/appointments/{{ apt.id }}/status"
+                  hx-target="#apt-{{ apt.id }}"
+                  hx-swap="outerHTML">
+                <input type="hidden" name="status" value="confirmed">
+                <button type="submit" class="p-2 text-bryt-silver hover:text-green-500 transition-colors" title="Confirm">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                    </svg>
+                </button>
+            </form>
+            <!-- Cancel -->
+            <form hx-post="/admin/appointments/{{ apt.id }}/status"
+                  hx-target="#apt-{{ apt.id }}"
+                  hx-swap="outerHTML">
+                <input type="hidden" name="status" value="cancelled">
+                <button type="submit" class="p-2 text-bryt-silver hover:text-red-500 transition-colors" title="Cancel">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </form>
+            {% elif apt.status == 'confirmed' %}
+            <!-- Mark complete -->
+            <form hx-post="/admin/appointments/{{ apt.id }}/status"
+                  hx-target="#apt-{{ apt.id }}"
+                  hx-swap="outerHTML">
+                <input type="hidden" name="status" value="completed">
+                <button type="submit" class="p-2 text-bryt-silver hover:text-bryt-pink transition-colors" title="Mark Complete">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </button>
+            </form>
+            {% endif %}
+
+            <!-- Edit -->
+            <button hx-get="/admin/appointments/{{ apt.id }}/edit"
+                    hx-target="#apt-{{ apt.id }}"
+                    hx-swap="outerHTML"
+                    class="p-2 text-bryt-silver hover:text-bryt-white transition-colors" title="Edit">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                </svg>
+            </button>
+
+            <!-- Delete -->
+            <button hx-delete="/admin/appointments/{{ apt.id }}"
+                    hx-target="#apt-{{ apt.id }}"
+                    hx-swap="outerHTML"
+                    hx-confirm="Delete this appointment? This cannot be undone."
+                    class="p-2 text-bryt-silver hover:text-red-500 transition-colors" title="Delete">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    {% if apt.notes %}
+    <div class="mt-3 ml-16 pl-4 border-l border-bryt-charcoal">
+        <p class="text-xs text-bryt-gray">Note: {{ apt.notes }}</p>
+    </div>
+    {% endif %}
+</div>

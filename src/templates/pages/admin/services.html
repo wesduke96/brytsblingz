@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Admin Header -->
+<section class="py-8 px-6 border-b border-bryt-charcoal bg-bryt-charcoal/30">
+    <div class="max-w-6xl mx-auto">
+        <div class="flex items-center justify-between">
+            <div>
+                <a href="/admin" class="text-xs text-bryt-gray hover:text-bryt-silver transition-colors">&larr; Back to Dashboard</a>
+                <p class="font-serif text-2xl text-bryt-white mt-2">Services</p>
+            </div>
+            <div class="flex gap-4 items-center">
+                <a href="/admin/appointments" class="px-4 py-2 text-xs tracking-wider uppercase text-bryt-silver hover:text-bryt-white transition-colors">
+                    Appointments
+                </a>
+                <a href="/admin/clients" class="px-4 py-2 text-xs tracking-wider uppercase text-bryt-silver hover:text-bryt-white transition-colors">
+                    Clients
+                </a>
+                <a href="/admin/services" class="px-4 py-2 text-xs tracking-wider uppercase text-bryt-white border-b border-bryt-white">
+                    Services
+                </a>
+                <a href="/admin/messages" class="px-4 py-2 text-xs tracking-wider uppercase text-bryt-silver hover:text-bryt-white transition-colors">
+                    Inbox
+                </a>
+                <span class="w-px h-6 bg-bryt-charcoal"></span>
+                <a href="/admin/logout" class="px-4 py-2 text-xs tracking-wider uppercase text-bryt-gray hover:text-red-400 transition-colors">
+                    Logout
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Add Service Button -->
+<section class="py-6 px-6 border-b border-bryt-charcoal">
+    <div class="max-w-6xl mx-auto flex justify-between items-center">
+        <p class="text-sm text-bryt-silver">{{ services|length }} service{% if services|length != 1 %}s{% endif %} total</p>
+        <button
+            hx-get="/admin/services/new"
+            hx-target="#newServiceZone"
+            hx-swap="innerHTML"
+            class="px-6 py-2 bg-bryt-pink text-bryt-black text-xs tracking-wider uppercase hover:bg-bryt-blush transition-colors">
+            + Add Service
+        </button>
+    </div>
+</section>
+
+<!-- New Service Zone -->
+<div class="px-6 max-w-6xl mx-auto">
+    <div id="newServiceZone"></div>
+</div>
+
+<!-- Services List -->
+<section class="py-8 px-6">
+    <div class="max-w-6xl mx-auto">
+        <div id="servicesList" class="grid gap-4">
+            {% if services %}
+                {% for service in services %}
+                    {% include "components/admin/service_row.html" %}
+                {% endfor %}
+            {% else %}
+            <div class="border border-bryt-charcoal">
+                <div class="p-12 text-center">
+                    <svg class="w-16 h-16 mx-auto mb-4 text-bryt-gray" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/>
+                    </svg>
+                    <p class="text-bryt-white text-lg mb-2">No services yet</p>
+                    <p class="text-bryt-silver text-sm mb-6">Add your piercing services to get started.</p>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}

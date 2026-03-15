@@ -1,0 +1,80 @@
+<div id="apt-{{ apt.id }}" class="p-5 bg-bryt-charcoal/30 border-l-2 border-bryt-pink">
+    <div class="flex items-start justify-between mb-4">
+        <div>
+            <p class="text-bryt-white font-medium">{{ apt.client.name }}</p>
+            <p class="text-xs text-bryt-gray">{{ apt.client.email }} · {{ apt.client.phone }}</p>
+        </div>
+        <!-- Cancel edit — reload row from server -->
+        <button hx-get="/admin/appointments/{{ apt.id }}/edit"
+                hx-target="#apt-{{ apt.id }}"
+                hx-swap="outerHTML"
+                hx-trigger="cancel-edit-{{ apt.id }} from:body"
+                class="hidden"></button>
+        <button onclick="htmx.trigger(document.body, 'cancel-edit-{{ apt.id }}')"
+                class="p-1 text-bryt-gray hover:text-bryt-white transition-colors" title="Cancel">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+        </button>
+    </div>
+
+    <form hx-post="/admin/appointments/{{ apt.id }}/edit"
+          hx-target="#apt-{{ apt.id }}"
+          hx-swap="outerHTML"
+          class="grid grid-cols-2 md:grid-cols-4 gap-4">
+
+        <!-- Service -->
+        <div class="col-span-2">
+            <label class="block text-xs tracking-wider uppercase text-bryt-gray mb-1">Service</label>
+            <select name="service_id"
+                    class="w-full bg-bryt-black border border-bryt-charcoal text-bryt-white text-sm px-3 py-2 focus:outline-none focus:border-bryt-pink">
+                {% for svc in services %}
+                <option value="{{ svc.id }}" {% if svc.id == apt.service_id %}selected{% endif %}>
+                    {{ svc.name }} — ${{ svc.price|int }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- Quantity -->
+        <div>
+            <label class="block text-xs tracking-wider uppercase text-bryt-gray mb-1">Qty</label>
+            <input type="number" name="quantity" min="1" max="10"
+                   value="{{ apt.quantity }}"
+                   class="w-full bg-bryt-black border border-bryt-charcoal text-bryt-white text-sm px-3 py-2 focus:outline-none focus:border-bryt-pink">
+        </div>
+
+        <!-- Date -->
+        <div>
+            <label class="block text-xs tracking-wider uppercase text-bryt-gray mb-1">Date</label>
+            <input type="date" name="appointment_date"
+                   value="{{ apt.appointment_date.strftime('%Y-%m-%d') }}"
+                   class="w-full bg-bryt-black border border-bryt-charcoal text-bryt-white text-sm px-3 py-2 focus:outline-none focus:border-bryt-pink">
+        </div>
+
+        <!-- Time -->
+        <div>
+            <label class="block text-xs tracking-wider uppercase text-bryt-gray mb-1">Time</label>
+            <input type="time" name="appointment_time"
+                   value="{{ apt.appointment_time.strftime('%H:%M') }}"
+                   class="w-full bg-bryt-black border border-bryt-charcoal text-bryt-white text-sm px-3 py-2 focus:outline-none focus:border-bryt-pink">
+        </div>
+
+        <!-- Notes -->
+        <div class="col-span-2 md:col-span-3">
+            <label class="block text-xs tracking-wider uppercase text-bryt-gray mb-1">Notes</label>
+            <input type="text" name="notes"
+                   value="{{ apt.notes or '' }}"
+                   placeholder="Optional notes…"
+                   class="w-full bg-bryt-black border border-bryt-charcoal text-bryt-white text-sm px-3 py-2 focus:outline-none focus:border-bryt-pink">
+        </div>
+
+        <!-- Save -->
+        <div class="flex items-end">
+            <button type="submit"
+                    class="w-full px-4 py-2 bg-bryt-pink text-bryt-black text-xs tracking-widest uppercase hover:bg-bryt-blush transition-colors">
+                Save
+            </button>
+        </div>
+    </form>
+</div>

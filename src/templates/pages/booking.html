@@ -1,0 +1,524 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="py-16 px-6 border-b border-bryt-charcoal">
+    <div class="max-w-4xl mx-auto text-center">
+        <h1 class="text-xs tracking-[0.4em] uppercase text-bryt-gray mb-3">Schedule</h1>
+        <p class="font-serif text-5xl text-bryt-white mb-6">Book an Appointment</p>
+        <p class="text-bryt-silver max-w-xl mx-auto">
+            Select your service, pick a time that works for you, and I'll confirm your appointment within 48 hours.
+        </p>
+        
+        <!-- Small circular photo -->
+        <div class="mt-8 flex justify-center">
+            <div class="w-20 h-20 rounded-full overflow-hidden border-2 border-bryt-pink/50 shadow-[0_0_20px_rgba(232,180,184,0.3)]">
+                <img src="/static/images/bryt/bryt-party.jpeg" 
+                     alt="Bryt" 
+                     class="w-full h-full object-cover">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Important Notice -->
+<section class="py-8 px-6 bg-bryt-charcoal/30 border-b border-bryt-charcoal">
+    <div class="max-w-2xl mx-auto">
+        <div class="p-6 border border-bryt-pink/30 bg-bryt-pink/5">
+            <h3 class="text-bryt-pink text-sm font-medium mb-4 flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                Important: What to Bring
+            </h3>
+            <p class="text-bryt-silver text-sm mb-4">
+                A waiver must be signed in person before any piercing service can be performed. 
+                Please bring the following to your appointment:
+            </p>
+            <div class="space-y-3">
+                <div class="flex gap-3">
+                    <span class="text-bryt-pink text-sm">18+</span>
+                    <p class="text-bryt-silver text-sm">
+                        Valid photo ID (driver's license or state ID)
+                    </p>
+                </div>
+                <div class="flex gap-3">
+                    <span class="text-bryt-pink text-sm">Under 18</span>
+                    <p class="text-bryt-silver text-sm">
+                        Parent or legal guardian must be present with their photo ID, plus the minor's birth certificate
+                    </p>
+                </div>
+            </div>
+            <p class="text-bryt-gray text-xs mt-4 italic">
+                These requirements are in accordance with Georgia state piercing laws.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- Toast Notification -->
+<div id="toast" class="fixed top-24 left-1/2 -translate-x-1/2 z-50 opacity-0 pointer-events-none transition-all duration-300 transform -translate-y-4">
+    <div class="px-6 py-4 bg-bryt-charcoal border border-bryt-pink/50 shadow-[0_0_30px_rgba(232,180,184,0.2)] max-w-md mx-4">
+        <div class="flex items-start gap-3">
+            <svg class="w-5 h-5 text-bryt-pink flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+            </svg>
+            <div class="flex-1">
+                <p id="toastMessage" class="text-bryt-pearl text-sm"></p>
+            </div>
+            <button onclick="hideToast()" class="text-bryt-gray hover:text-bryt-white transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Booking Form -->
+<section class="py-20 px-6">
+    <div class="max-w-2xl mx-auto">
+        <form id="bookingForm" class="space-y-8" hx-post="/api/appointments" hx-swap="innerHTML" hx-target="#formResponse">
+            
+            <!-- Personal Info -->
+            <div class="space-y-6">
+                <h3 class="text-xs tracking-[0.3em] uppercase text-bryt-gray border-b border-bryt-charcoal pb-2">
+                    Your Information
+                </h3>
+                
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm text-bryt-silver mb-2" for="client_name">Full Name</label>
+                        <input type="text" id="client_name" name="client_name" required
+                               class="w-full px-4 py-3 bg-bryt-charcoal/50 border border-bryt-charcoal text-bryt-white placeholder-bryt-gray focus:border-bryt-silver focus:outline-none transition-colors"
+                               placeholder="Your name">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-bryt-silver mb-2" for="client_phone">Phone</label>
+                        <input type="tel" id="client_phone" name="client_phone" required
+                               class="w-full px-4 py-3 bg-bryt-charcoal/50 border border-bryt-charcoal text-bryt-white placeholder-bryt-gray focus:border-bryt-silver focus:outline-none transition-colors"
+                               placeholder="(555) 555-5555">
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block text-sm text-bryt-silver mb-2" for="client_email">Email</label>
+                    <input type="email" id="client_email" name="client_email" required
+                           class="w-full px-4 py-3 bg-bryt-charcoal/50 border border-bryt-charcoal text-bryt-white placeholder-bryt-gray focus:border-bryt-silver focus:outline-none transition-colors"
+                           placeholder="your@email.com">
+                </div>
+            </div>
+            
+            <!-- Service Selection -->
+            <div class="space-y-6">
+                <h3 class="text-xs tracking-[0.3em] uppercase text-bryt-gray border-b border-bryt-charcoal pb-2">
+                    Select Services
+                </h3>
+                
+                <!-- Max piercings notice -->
+                <div class="p-4 border border-bryt-charcoal bg-bryt-charcoal/20 text-sm">
+                    <p class="text-bryt-silver mb-2">
+                        <span class="text-bryt-pink font-medium">Note:</span> You can book up to <span class="text-bryt-white font-medium">5 piercings</span> per appointment online.
+                    </p>
+                    <p class="text-bryt-gray text-xs">
+                        Want more than 5? <a href="/contact" class="text-bryt-pink hover:text-bryt-blush underline">Contact me</a> or visit in person to discuss your session.
+                    </p>
+                </div>
+                
+                <!-- Services Container -->
+                <div id="servicesContainer" class="space-y-4">
+                    <!-- First service row (always visible) -->
+                    <div class="service-row grid grid-cols-12 gap-3 items-end">
+                        <div class="col-span-8">
+                            <label class="block text-sm text-bryt-silver mb-2">Service</label>
+                            <select name="services[]" required
+                                    class="service-select w-full px-4 py-3 bg-bryt-charcoal/50 border border-bryt-charcoal text-bryt-white focus:border-bryt-silver focus:outline-none transition-colors">
+                                <option value="">Choose a service...</option>
+                                {% for category, category_services in services_by_category.items() %}
+                                <optgroup label="{{ category }}">
+                                    {% for service in category_services %}
+                                    <option value="{{ service.id }}" data-price="{{ service.price }}">{{ service.name }} - ${{ "%.0f"|format(service.price) }}</option>
+                                    {% endfor %}
+                                </optgroup>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-span-3">
+                            <label class="block text-sm text-bryt-silver mb-2">Qty</label>
+                            <select name="quantities[]" class="quantity-select w-full px-4 py-3 bg-bryt-charcoal/50 border border-bryt-charcoal text-bryt-white focus:border-bryt-silver focus:outline-none transition-colors">
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                            </select>
+                        </div>
+                        <div class="col-span-1">
+                            <!-- Placeholder for alignment -->
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Add Another Service Button -->
+                <button type="button" id="addServiceBtn" 
+                        class="flex items-center gap-2 text-sm text-bryt-pink hover:text-bryt-blush transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                    </svg>
+                    Add Another Service
+                </button>
+                
+                <!-- Selected Services Summary -->
+                <div id="servicesSummary" class="hidden p-4 border border-bryt-charcoal bg-bryt-charcoal/30">
+                    <h4 class="text-sm text-bryt-silver mb-3">Your Selection:</h4>
+                    <div id="summaryList" class="space-y-2 text-sm"></div>
+                    <div class="border-t border-bryt-charcoal mt-3 pt-3 space-y-2">
+                        <div class="flex justify-between">
+                            <span class="text-bryt-silver">Total Piercings:</span>
+                            <span id="totalPiercings" class="text-bryt-pearl font-medium">0</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-bryt-silver">Estimated Total:</span>
+                            <span id="estimatedTotal" class="text-bryt-pink font-serif text-xl">$0</span>
+                        </div>
+                    </div>
+                    <p class="text-xs text-bryt-gray mt-3 italic">
+                        * Estimate only. Final price confirmed at appointment.
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Date/Time -->
+            <div class="space-y-6">
+                <h3 class="text-xs tracking-[0.3em] uppercase text-bryt-gray border-b border-bryt-charcoal pb-2">
+                    Preferred Date & Time
+                </h3>
+                
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm text-bryt-silver mb-2" for="appointment_date">Date</label>
+                        <input type="date" id="appointment_date" name="appointment_date" required
+                               class="w-full px-4 py-3 bg-bryt-charcoal/50 border border-bryt-charcoal text-bryt-white focus:border-bryt-silver focus:outline-none transition-colors">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-bryt-silver mb-2" for="appointment_time">Time</label>
+                        <select id="appointment_time" name="appointment_time" required
+                                class="w-full px-4 py-3 bg-bryt-charcoal/50 border border-bryt-charcoal text-bryt-white focus:border-bryt-silver focus:outline-none transition-colors">
+                            <option value="">Select a time...</option>
+                            <option value="10:00">10:00 AM</option>
+                            <option value="10:30">10:30 AM</option>
+                            <option value="11:00">11:00 AM</option>
+                            <option value="11:30">11:30 AM</option>
+                            <option value="12:00">12:00 PM</option>
+                            <option value="12:30">12:30 PM</option>
+                            <option value="13:00">1:00 PM</option>
+                            <option value="13:30">1:30 PM</option>
+                            <option value="14:00">2:00 PM</option>
+                            <option value="14:30">2:30 PM</option>
+                            <option value="15:00">3:00 PM</option>
+                            <option value="15:30">3:30 PM</option>
+                            <option value="16:00">4:00 PM</option>
+                            <option value="16:30">4:30 PM</option>
+                            <option value="17:00">5:00 PM</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Notes -->
+            <div class="space-y-6">
+                <h3 class="text-xs tracking-[0.3em] uppercase text-bryt-gray border-b border-bryt-charcoal pb-2">
+                    Additional Notes
+                </h3>
+                
+                <div>
+                    <label class="block text-sm text-bryt-silver mb-2" for="notes">
+                        Anything else I should know? (optional)
+                    </label>
+                    <textarea id="notes" name="notes" rows="4"
+                              class="w-full px-4 py-3 bg-bryt-charcoal/50 border border-bryt-charcoal text-bryt-white placeholder-bryt-gray focus:border-bryt-silver focus:outline-none transition-colors resize-none"
+                              placeholder="First piercing, questions, special requests..."></textarea>
+                </div>
+            </div>
+            
+            <!-- Submit -->
+            <div class="pt-4">
+                <button type="submit"
+                        class="w-full px-8 py-4 bg-bryt-pink text-bryt-black text-sm tracking-widest uppercase hover:bg-bryt-blush transition-colors">
+                    Request Appointment
+                </button>
+                <p class="text-xs text-bryt-gray text-center mt-4">
+                    I'll confirm your appointment via email within 48 hours.
+                </p>
+            </div>
+            
+            <!-- Response area for HTMX -->
+            <div id="formResponse"></div>
+        </form>
+    </div>
+</section>
+
+<!-- Policy Info -->
+<section class="py-16 px-6 bg-bryt-charcoal/20 border-t border-bryt-charcoal">
+    <div class="max-w-4xl mx-auto">
+        <div class="grid md:grid-cols-3 gap-8 text-center">
+            <div>
+                <h4 class="text-bryt-white text-sm mb-2">Cancellation Policy</h4>
+                <p class="text-xs text-bryt-silver">
+                    24-hour notice required for cancellations or rescheduling.
+                </p>
+            </div>
+            <div>
+                <h4 class="text-bryt-white text-sm mb-2">Age Requirement</h4>
+                <p class="text-xs text-bryt-silver">
+                    Must be 18+ with valid ID. Under 18 requires parent/guardian.
+                </p>
+            </div>
+            <div>
+                <h4 class="text-bryt-white text-sm mb-2">What to Bring</h4>
+                <p class="text-xs text-bryt-silver">
+                    Valid photo ID. Eat before your appointment!
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Set minimum date to today
+    document.getElementById('appointment_date').min = new Date().toISOString().split('T')[0];
+    
+    // Toast notification functions
+    const toast = document.getElementById('toast');
+    const toastMessage = document.getElementById('toastMessage');
+    let toastTimeout;
+    
+    function showToast(message, duration = 4000) {
+        toastMessage.textContent = message;
+        toast.classList.remove('opacity-0', 'pointer-events-none', '-translate-y-4');
+        toast.classList.add('opacity-100', 'pointer-events-auto', 'translate-y-0');
+        
+        // Clear any existing timeout
+        if (toastTimeout) clearTimeout(toastTimeout);
+        
+        // Auto-hide after duration
+        toastTimeout = setTimeout(hideToast, duration);
+    }
+    
+    function hideToast() {
+        toast.classList.add('opacity-0', 'pointer-events-none', '-translate-y-4');
+        toast.classList.remove('opacity-100', 'pointer-events-auto', 'translate-y-0');
+    }
+    
+    // Service selection handling
+    const servicesContainer = document.getElementById('servicesContainer');
+    const addServiceBtn = document.getElementById('addServiceBtn');
+    const servicesSummary = document.getElementById('servicesSummary');
+    const summaryList = document.getElementById('summaryList');
+    const totalPiercingsEl = document.getElementById('totalPiercings');
+    
+    // Service options template (for new rows)
+    const serviceOptionsHTML = `
+        <option value="">Choose a service...</option>
+        {% for category, category_services in services_by_category.items() %}
+        <optgroup label="{{ category }}">
+            {% for service in category_services %}
+            <option value="{{ service.id }}" data-price="{{ service.price }}">{{ service.name }} - ${{ "%.0f"|format(service.price) }}</option>
+            {% endfor %}
+        </optgroup>
+        {% endfor %}
+    `;
+    
+    // Get current total piercings
+    function getTotalPiercings() {
+        const rows = servicesContainer.querySelectorAll('.service-row');
+        let total = 0;
+        rows.forEach(row => {
+            const qtySelect = row.querySelector('.quantity-select');
+            total += parseInt(qtySelect.value) || 0;
+        });
+        return total;
+    }
+    
+    // Add new service row
+    addServiceBtn.addEventListener('click', function() {
+        const totalRows = servicesContainer.querySelectorAll('.service-row').length;
+        const totalPiercings = getTotalPiercings();
+        
+        if (totalRows >= 5) {
+            showToast('Maximum 5 services per appointment.');
+            return;
+        }
+        
+        // Calculate remaining piercings for the new row's quantity options
+        const remainingPiercings = Math.max(1, 5 - totalPiercings);
+        
+        // If already at 5 piercings, show a message but still allow adding the row
+        // (they'll just need to reduce other quantities first)
+        if (totalPiercings >= 5) {
+            showToast('You\'ve reached the 5 piercing limit. Reduce other quantities to add piercings to this service.');
+        }
+        
+        // Build quantity options based on remaining allowed
+        let qtyOptionsHTML = '';
+        for (let i = 1; i <= remainingPiercings; i++) {
+            qtyOptionsHTML += `<option value="${i}">${i}</option>`;
+        }
+        
+        const newRow = document.createElement('div');
+        newRow.className = 'service-row grid grid-cols-12 gap-3 items-end animate-fade-in';
+        newRow.innerHTML = `
+            <div class="col-span-8">
+                <select name="services[]" required
+                        class="service-select w-full px-4 py-3 bg-bryt-charcoal/50 border border-bryt-charcoal text-bryt-white focus:border-bryt-silver focus:outline-none transition-colors">
+                    ${serviceOptionsHTML}
+                </select>
+            </div>
+            <div class="col-span-3">
+                <select name="quantities[]" class="quantity-select w-full px-4 py-3 bg-bryt-charcoal/50 border border-bryt-charcoal text-bryt-white focus:border-bryt-silver focus:outline-none transition-colors">
+                    ${qtyOptionsHTML}
+                </select>
+            </div>
+            <div class="col-span-1 flex justify-center">
+                <button type="button" class="remove-service-btn text-bryt-gray hover:text-bryt-pink transition-colors p-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+        `;
+        
+        servicesContainer.appendChild(newRow);
+        attachRowListeners(newRow);
+        updateQuantityLimits();
+        updateSummary();
+        updateAddButtonVisibility();
+    });
+    
+    // Attach listeners to a service row
+    function attachRowListeners(row) {
+        const serviceSelect = row.querySelector('.service-select');
+        const quantitySelect = row.querySelector('.quantity-select');
+        const removeBtn = row.querySelector('.remove-service-btn');
+        
+        serviceSelect.addEventListener('change', function() {
+            updateQuantityLimits();
+            updateSummary();
+        });
+        quantitySelect.addEventListener('change', function() {
+            updateQuantityLimits();
+            updateSummary();
+        });
+        
+        if (removeBtn) {
+            removeBtn.addEventListener('click', function() {
+                row.remove();
+                // Use setTimeout to ensure DOM is updated before recalculating
+                setTimeout(() => {
+                    updateQuantityLimits();
+                    updateSummary();
+                    updateAddButtonVisibility();
+                }, 0);
+            });
+        }
+    }
+    
+    // Attach listeners to initial row
+    const initialRow = servicesContainer.querySelector('.service-row');
+    attachRowListeners(initialRow);
+    
+    // Update quantity dropdown limits based on remaining allowed piercings
+    function updateQuantityLimits() {
+        const rows = servicesContainer.querySelectorAll('.service-row');
+        const maxTotal = 5;
+        
+        // Calculate current total (excluding each row when updating its own limit)
+        rows.forEach(currentRow => {
+            const currentQtySelect = currentRow.querySelector('.quantity-select');
+            let otherTotal = 0;
+            
+            // Sum quantities from all OTHER rows
+            rows.forEach(row => {
+                if (row !== currentRow) {
+                    const qtySelect = row.querySelector('.quantity-select');
+                    otherTotal += parseInt(qtySelect.value) || 0;
+                }
+            });
+            
+            // Calculate max allowed for this row
+            const maxForThisRow = Math.max(1, maxTotal - otherTotal);
+            const currentValue = parseInt(currentQtySelect.value) || 1;
+            
+            // Rebuild options with correct max
+            currentQtySelect.innerHTML = '';
+            for (let i = 1; i <= maxForThisRow; i++) {
+                const option = document.createElement('option');
+                option.value = i;
+                option.textContent = i;
+                if (i === Math.min(currentValue, maxForThisRow)) {
+                    option.selected = true;
+                }
+                currentQtySelect.appendChild(option);
+            }
+            
+            // If current value exceeded new max, it's been auto-corrected
+            if (currentValue > maxForThisRow) {
+                currentQtySelect.value = maxForThisRow;
+            }
+        });
+    }
+    
+    // Update summary display
+    function updateSummary() {
+        const rows = servicesContainer.querySelectorAll('.service-row');
+        let totalPiercings = 0;
+        let totalCost = 0;
+        let summaryHTML = '';
+        
+        rows.forEach(row => {
+            const serviceSelect = row.querySelector('.service-select');
+            const quantitySelect = row.querySelector('.quantity-select');
+            
+            if (serviceSelect.value) {
+                const selectedOption = serviceSelect.options[serviceSelect.selectedIndex];
+                const serviceName = selectedOption.text.split(' - ')[0];
+                const price = parseFloat(selectedOption.dataset.price) || 0;
+                const quantity = parseInt(quantitySelect.value);
+                const lineTotal = price * quantity;
+                
+                totalPiercings += quantity;
+                totalCost += lineTotal;
+                
+                summaryHTML += `
+                    <div class="flex justify-between text-bryt-pearl">
+                        <span>${serviceName} <span class="text-bryt-gray">x${quantity}</span></span>
+                        <span class="text-bryt-silver">$${lineTotal.toFixed(0)}</span>
+                    </div>
+                `;
+            }
+        });
+        
+        if (summaryHTML) {
+            summaryList.innerHTML = summaryHTML;
+            totalPiercingsEl.textContent = totalPiercings;
+            document.getElementById('estimatedTotal').textContent = '$' + totalCost.toFixed(0);
+            servicesSummary.classList.remove('hidden');
+        } else {
+            servicesSummary.classList.add('hidden');
+        }
+    }
+    
+    // Update add button visibility
+    function updateAddButtonVisibility() {
+        const totalRows = servicesContainer.querySelectorAll('.service-row').length;
+        // Only hide button if max rows (5) reached
+        addServiceBtn.style.display = totalRows >= 5 ? 'none' : 'flex';
+    }
+    
+    // Initialize quantity limits on page load
+    updateQuantityLimits();
+</script>
+{% endblock %}
+

@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Admin Header -->
+<section class="py-8 px-6 border-b border-bryt-charcoal bg-bryt-charcoal/30">
+    <div class="max-w-6xl mx-auto">
+        <div class="flex items-center justify-between">
+            <div>
+                <a href="/admin" class="text-xs text-bryt-gray hover:text-bryt-silver transition-colors">&larr; Back to Dashboard</a>
+                <p class="font-serif text-2xl text-bryt-white mt-2">Appointments</p>
+            </div>
+            <div class="flex gap-4 items-center">
+                <a href="/admin/appointments" class="px-4 py-2 text-xs tracking-wider uppercase text-bryt-white border-b border-bryt-white">
+                    Appointments
+                </a>
+                <a href="/admin/clients" class="px-4 py-2 text-xs tracking-wider uppercase text-bryt-silver hover:text-bryt-white transition-colors">
+                    Clients
+                </a>
+                <a href="/admin/services" class="px-4 py-2 text-xs tracking-wider uppercase text-bryt-silver hover:text-bryt-white transition-colors">
+                    Services
+                </a>
+                <a href="/admin/messages" class="px-4 py-2 text-xs tracking-wider uppercase text-bryt-silver hover:text-bryt-white transition-colors">
+                    Inbox
+                </a>
+                <span class="w-px h-6 bg-bryt-charcoal"></span>
+                <a href="/admin/logout" class="px-4 py-2 text-xs tracking-wider uppercase text-bryt-gray hover:text-red-400 transition-colors">
+                    Logout
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Filters -->
+<section class="py-6 px-6 border-b border-bryt-charcoal">
+    <div class="max-w-6xl mx-auto">
+        <div class="flex flex-wrap gap-3 items-center">
+            <span class="text-xs tracking-wider uppercase text-bryt-gray">Filter:</span>
+            <a href="/admin/appointments" 
+               class="px-4 py-2 text-xs tracking-wider uppercase {% if not current_filter %}bg-bryt-white text-bryt-black{% else %}text-bryt-silver border border-bryt-charcoal hover:border-bryt-gray{% endif %} transition-colors">
+                All ({{ counts.all }})
+            </a>
+            <a href="/admin/appointments?status=pending" 
+               class="px-4 py-2 text-xs tracking-wider uppercase {% if current_filter == 'pending' %}bg-yellow-500 text-bryt-black{% else %}text-bryt-silver border border-bryt-charcoal hover:border-yellow-500/50{% endif %} transition-colors">
+                Pending ({{ counts.pending }})
+            </a>
+            <a href="/admin/appointments?status=confirmed" 
+               class="px-4 py-2 text-xs tracking-wider uppercase {% if current_filter == 'confirmed' %}bg-green-500 text-bryt-black{% else %}text-bryt-silver border border-bryt-charcoal hover:border-green-500/50{% endif %} transition-colors">
+                Confirmed ({{ counts.confirmed }})
+            </a>
+            <a href="/admin/appointments?status=completed" 
+               class="px-4 py-2 text-xs tracking-wider uppercase {% if current_filter == 'completed' %}bg-bryt-silver text-bryt-black{% else %}text-bryt-silver border border-bryt-charcoal hover:border-bryt-gray{% endif %} transition-colors">
+                Completed ({{ counts.completed }})
+            </a>
+            <a href="/admin/appointments?status=cancelled" 
+               class="px-4 py-2 text-xs tracking-wider uppercase {% if current_filter == 'cancelled' %}bg-red-500 text-bryt-black{% else %}text-bryt-silver border border-bryt-charcoal hover:border-red-500/50{% endif %} transition-colors">
+                Cancelled ({{ counts.cancelled }})
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Appointments List -->
+<section class="py-8 px-6">
+    <div class="max-w-6xl mx-auto">
+        {% if appointments %}
+        <div class="border border-bryt-charcoal divide-y divide-bryt-charcoal">
+            {% for apt in appointments %}
+            {% include "components/admin/appointment_row.html" %}
+            {% endfor %}
+        </div>
+        {% else %}
+        <!-- Empty State -->
+        <div class="border border-bryt-charcoal">
+            <div class="p-12 text-center">
+                <svg class="w-16 h-16 mx-auto mb-4 text-bryt-gray" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                </svg>
+                <p class="text-bryt-white text-lg mb-2">No appointments found</p>
+                <p class="text-bryt-silver text-sm">
+                    {% if current_filter %}
+                    No {{ current_filter }} appointments. <a href="/admin/appointments" class="text-bryt-pink hover:underline">View all</a>
+                    {% else %}
+                    When clients book appointments, they'll show up here.
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

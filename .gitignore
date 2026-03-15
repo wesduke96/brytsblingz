@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+
+# Virtual environment
+venv/
+.env
+.venv/
+
+# Database (ephemeral on Railway — keep out of repo)
+*.db
+*.sqlite
+*.sqlite3
+
+# IDE / OS
+.cursor/
+*.code-workspace
+.DS_Store
+Thumbs.db
+
+# Secrets / local config
+.env.local
+.env.*.local
+
+# Local dev only
+style_reference/
+notes/
+todo.txt
+rollingcontext.txt
