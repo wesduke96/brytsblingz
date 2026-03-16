@@ -64,14 +64,16 @@ class Appointment(Base):
     
     @property
     def total_price(self):
-        """Calculate total price with second-half-off discount"""
+        """Calculate total price; pair discount only applies when service has a pair_price set"""
         if self.quantity == 1:
             return self.service.price
-        elif self.quantity == 2:
-            return self.service.price + (self.service.price / 2)
+        elif self.service.pair_price:
+            if self.quantity == 2:
+                return self.service.pair_price
+            else:
+                return self.service.pair_price + (self.service.price / 2) * (self.quantity - 2)
         else:
-            # For 3+, first full price, rest half off
-            return self.service.price + ((self.quantity - 1) * (self.service.price / 2))
+            return self.service.price * self.quantity
 
 
 class EarCreation(Base):

@@ -131,7 +131,7 @@
                     <div class="service-row grid grid-cols-12 gap-3 items-end">
                         <div class="col-span-8">
                             <label class="block text-sm text-bryt-silver mb-2">Service</label>
-                            <select name="services[]" required
+                            <select name="services" required
                                     class="service-select w-full px-4 py-3 bg-bryt-charcoal/50 border border-bryt-charcoal text-bryt-white focus:border-bryt-silver focus:outline-none transition-colors">
                                 <option value="">Choose a service...</option>
                                 {% for category, category_services in services_by_category.items() %}
@@ -145,7 +145,7 @@
                         </div>
                         <div class="col-span-3">
                             <label class="block text-sm text-bryt-silver mb-2">Qty</label>
-                            <select name="quantities[]" class="quantity-select w-full px-4 py-3 bg-bryt-charcoal/50 border border-bryt-charcoal text-bryt-white focus:border-bryt-silver focus:outline-none transition-colors">
+                            <select name="quantities" class="quantity-select w-full px-4 py-3 bg-bryt-charcoal/50 border border-bryt-charcoal text-bryt-white focus:border-bryt-silver focus:outline-none transition-colors">
                                 <option value="1">1</option>
                                 <option value="2">2</option>
                                 <option value="3">3</option>
@@ -371,13 +371,13 @@
         newRow.className = 'service-row grid grid-cols-12 gap-3 items-end animate-fade-in';
         newRow.innerHTML = `
             <div class="col-span-8">
-                <select name="services[]" required
+                <select name="services" required
                         class="service-select w-full px-4 py-3 bg-bryt-charcoal/50 border border-bryt-charcoal text-bryt-white focus:border-bryt-silver focus:outline-none transition-colors">
                     ${serviceOptionsHTML}
                 </select>
             </div>
             <div class="col-span-3">
-                <select name="quantities[]" class="quantity-select w-full px-4 py-3 bg-bryt-charcoal/50 border border-bryt-charcoal text-bryt-white focus:border-bryt-silver focus:outline-none transition-colors">
+                <select name="quantities" class="quantity-select w-full px-4 py-3 bg-bryt-charcoal/50 border border-bryt-charcoal text-bryt-white focus:border-bryt-silver focus:outline-none transition-colors">
                     ${qtyOptionsHTML}
                 </select>
             </div>

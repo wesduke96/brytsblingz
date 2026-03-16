@@ -88,10 +88,15 @@ async def create_appointment(
 
             if quantity == 1:
                 line_total = service.price
-            elif quantity == 2 and service.pair_price:
-                line_total = service.pair_price
+            elif service.pair_price:
+                if quantity == 2:
+                    line_total = service.pair_price
+                else:
+                    # First pair at pair_price, additional at half off
+                    line_total = service.pair_price + (service.price / 2) * (quantity - 2)
             else:
-                line_total = service.price + (service.price / 2) * (quantity - 1)
+                # No pair pricing for this service — full price per unit
+                line_total = service.price * quantity
 
             appointment = Appointment(
                 client_id=client.id,
