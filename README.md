@@ -1,122 +1,137 @@
 # Bryt Piercing Studio
 
-A booking and client management web application for Bryt's piercing services.
+A booking and client management web app for Bryt's piercing services.
 
-## Features
+**Live site**: [bryt.nullroute.studio](https://bryt.nullroute.studio)
+**Repository**: [github.com/wesduke96/brytsblingz](https://github.com/wesduke96/brytsblingz)
 
-- **Services Showcase** - Display piercing services with pricing
-- **Appointment Booking** - Clients can request appointments online
-- **Ear Creations Shop** - Product showcase with Amazon storefront link
-- **Admin Dashboard** - Manage appointments, clients, and services
-- **Client Management** - Track client history and notes
+---
+
+## Infrastructure
+
+| Service | Details |
+|---|---|
+| **Domain** | `bryt.nullroute.studio` (via Squarespace / nullroute.studio) |
+| **Hosting** | Railway — auto-deploys from `master` branch on GitHub |
+| **Repository** | GitHub — `wesduke96/brytsblingz` |
+| **Business email** | Google Workspace — `@nullroute.studio` |
+| **Database** | SQLite (persisted on Railway) |
+
+### Deployment Flow
+
+Every push to `master` on GitHub triggers an automatic redeploy on Railway. No manual steps needed.
+
+```
+local dev → git push → GitHub → Railway auto-deploy → bryt.nullroute.studio
+```
+
+---
 
 ## Tech Stack
 
-- **Backend**: FastAPI (Python)
+- **Backend**: FastAPI (Python 3.13)
 - **Templates**: Jinja2
 - **Styling**: Tailwind CSS (via CDN)
-- **Database**: SQLite + SQLAlchemy (async)
+- **Database**: SQLite + SQLAlchemy (async) + aiosqlite + greenlet
 - **Interactivity**: HTMX
 
-## Getting Started
+---
+
+## Local Development
 
 ### Prerequisites
 
 - Python 3.10+
 - pip
 
-### Installation
+### Setup
 
-1. Navigate to the project directory:
-   ```bash
-   cd C:\Users\wes.duke\Desktop\bryt
-   ```
+```bash
+# Clone the repo
+git clone https://github.com/wesduke96/brytsblingz.git
+cd brytsblingz
 
-2. Create a virtual environment (recommended):
-   ```bash
-   python -m venv venv
-   venv\Scripts\activate
-   ```
+# Create and activate a virtual environment
+python -m venv venv
+venv\Scripts\activate        # Windows
+# source venv/bin/activate   # Mac/Linux
 
-3. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
+# Install dependencies
+pip install -r requirements.txt
 
-4. Run the development server:
-   ```bash
-   cd src
-   python main.py
-   ```
+# Run the dev server
+cd src
+python main.py
+# → http://127.0.0.1:8000
+```
 
-5. Open your browser to: **http://127.0.0.1:8000**
+---
 
 ## Project Structure
 
 ```
 bryt/
 ├── src/
-│   ├── main.py              # FastAPI application entry point
+│   ├── main.py              # FastAPI app entry point
+│   ├── create_admin.py      # Script to create admin user
+│   ├── seed_data.py         # Script to seed initial data
 │   ├── routes/
-│   │   ├── pages.py         # Public page routes
-│   │   ├── api.py           # API endpoints
-│   │   └── admin.py         # Admin dashboard routes
+│   │   ├── pages.py         # Public page routes (GET)
+│   │   ├── api.py           # HTMX form endpoints (POST)
+│   │   └── admin.py         # Admin dashboard (auth-gated)
+│   ├── db/
+│   │   ├── database.py      # Engine, session factory, init_db()
+│   │   └── models.py        # SQLAlchemy models
 │   ├── templates/
-│   │   ├── base.html        # Base template with navigation
-│   │   ├── pages/           # Page templates
-│   │   │   ├── home.html
-│   │   │   ├── services.html
-│   │   │   ├── booking.html
-│   │   │   ├── shop.html
-│   │   │   ├── contact.html
-│   │   │   └── admin/       # Admin templates
-│   │   └── components/      # Reusable components
-│   ├── static/
-│   │   ├── css/
-│   │   ├── js/
-│   │   └── images/
-│   └── db/
-│       ├── database.py      # Database configuration
-│       └── models.py        # SQLAlchemy models
-├── style_reference/         # Design inspiration & assets
+│   │   ├── base.html        # Base layout with nav
+│   │   ├── pages/           # Full page templates
+│   │   │   └── admin/       # Admin-only templates
+│   │   └── components/      # Reusable HTMX partials
+│   └── static/
+│       └── images/          # Bryt photos + client gallery
+├── railway.json             # Railway deployment config
 ├── requirements.txt
 └── README.md
 ```
 
+---
+
 ## Pages
 
 ### Public
-- `/` - Home page
-- `/services` - Services & pricing
-- `/booking` - Appointment booking form
-- `/shop` - Ear Creations shop
-- `/contact` - Contact form & FAQ
+| Route | Page |
+|---|---|
+| `/` | Home |
+| `/services` | Services & pricing |
+| `/booking` | Appointment booking form |
+| `/shop` | Ear Creations shop |
+| `/aftercare` | Aftercare guide |
+| `/contact` | Contact form & FAQ |
 
-### Admin
-- `/admin` - Dashboard overview
-- `/admin/appointments` - Manage appointments
-- `/admin/clients` - Client management
-- `/admin/services` - Service management
+### Admin (auth-gated)
+| Route | Page |
+|---|---|
+| `/admin` | Dashboard overview |
+| `/admin/appointments` | Manage appointments |
+| `/admin/clients` | Client management |
+| `/admin/services` | Service management |
+
+---
 
 ## Design
 
-**Aesthetic**: Clean, modern, feminine with comforting touches
-**Colors**: Monochromatic (black & white)
-**Typography**: 
-- Pinyon Script (elegant script for logo)
-- Cormorant Garamond (refined serif for headings)
-- Questrial (clean sans-serif for body)
+**Aesthetic**: Dark, editorial, gothic-feminine
+**Colors**: Monochromatic black & white with pink/red accents
+**Typography**:
+- Pinyon Script — logo / decorative
+- Cormorant Garamond — headings
+- Questrial — body text
 
-See `style_reference/` for design assets and inspiration.
+---
 
-## Development Notes
+## TODO
 
-This is a local playground project - not version controlled.
-
-### TODO
-- [ ] Implement full CRUD for appointments
-- [ ] Add authentication for admin area
 - [ ] Connect Ear Creations to actual products
 - [ ] Set up email notifications for bookings
 - [ ] Add calendar integration
-
+- [ ] Persistent database volume on Railway (SQLite survives redeploys)
